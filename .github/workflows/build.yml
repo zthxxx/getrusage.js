@@ -11,6 +11,12 @@ on:
   workflow_dispatch:
     branches:
       - master
+    inputs:
+      debug_enabled:
+        # https://github.com/mxschmitt/action-tmate#manually-triggered-debug
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'     
+        required: false
+        default: false
 
 jobs:
   build:
@@ -40,9 +46,17 @@ jobs:
       - name: Setup environment
         uses: zthxxx/getrusage.js/.github/actions/setup@master
 
+      # Enable tmate debugging of manually-triggered workflows if the input option was provided
+      - name: Setup tmate session
+        # https://github.com/mxschmitt/action-tmate
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled && matrix.target.os == 'ubuntu-latest' && matrix.target.arch == 'x64' }}
+        with:
+          limit-access-to-actor: true
+
       - name: Select GCC Version
         # using gcc 4.9 due to the sh*t compatibility in our legacy build system
-        if: matrix.target.os == 'ubuntu-latest'
+        if: ${{ matrix.target.os == 'ubuntu-latest' && matrix.target.arch == 'x64' }}
         # https://github.com/egor-tensin/setup-gcc
         uses: egor-tensin/setup-gcc@v1.2
         with:
