@@ -69,26 +69,9 @@ export interface RUsage {
 }
 
 export const getrusage = (who?: RUSAGE_SELF | RUSAGE_CHILDREN): RUsage => {
-  const fields = binding.getrusageArray(who)
-
-  const usage: RUsage = {
-    utime: Number(fields[0].toFixed(6)),
-    stime: Number(fields[1].toFixed(6)),
-    maxrss: fields[2],
-    idrss: fields[3],
-    ixrss: fields[4],
-    isrss: fields[5],
-    minflt: fields[6],
-    majflt: fields[7],
-    nswap: fields[8],
-    inblock: fields[9],
-    oublock: fields[10],
-    msgsnd: fields[11],
-    msgrcv: fields[12],
-    nsignals: fields[13],
-    nvcsw: fields[14],
-    nivcsw: fields[15]
-  }
+  const usage: RUsage = binding.getrusage(who)
+  usage.utime = Number(usage.utime.toFixed(6))
+  usage.stime = Number(usage.stime.toFixed(6))
 
   /**
    * due to macOS use BSD getrusage which unit is bytes,

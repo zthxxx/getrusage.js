@@ -1,56 +1,47 @@
-/**
- * modify from https://github.com/andrasq/node-qrusage/blob/1.5.2/qrusage.cc
- */
-
-#include <nan.h>
-using v8::FunctionTemplate;
-
-#include <sys/time.h>
 #include <sys/resource.h>
+#include <napi.h>
 
-// extract the integer passed as the first argument
-static int getIntArg( Nan::NAN_METHOD_ARGS_TYPE info, int index ) {
-    int defaultValue = RUSAGE_SELF;
-    return Nan::To<int32_t>(info[index]).FromMaybe(defaultValue);
+Napi::Object getrusageNapi(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  // https://www.gnu.org/software/libc/manual/html_node/Resource-Usage.html
+  int who = ((info.Length() > 0 && info[0].IsNumber()) ? info[0].ToNumber().Int32Value() : RUSAGE_SELF);
+  struct rusage ru;
+  int flag = getrusage(who, &ru);
+
+  if (flag == -1) {
+    Napi::Error::New(env, "getrusage() call failed!").ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  Napi::Object usage = Napi::Object::New(env);
+  usage.Set(Napi::String::New(env, "utime"), Napi::Number::New(env, (double)ru.ru_utime.tv_sec + (double)ru.ru_utime.tv_usec * 1e-6));
+  usage.Set(Napi::String::New(env, "stime"), Napi::Number::New(env, (double)ru.ru_stime.tv_sec + (double)ru.ru_stime.tv_usec * 1e-6));
+  usage.Set(Napi::String::New(env, "maxrss"), Napi::Number::New(env, ru.ru_maxrss));
+  usage.Set(Napi::String::New(env, "ixrss"), Napi::Number::New(env, ru.ru_ixrss));
+  usage.Set(Napi::String::New(env, "idrss"), Napi::Number::New(env, ru.ru_idrss));
+  usage.Set(Napi::String::New(env, "isrss"), Napi::Number::New(env, ru.ru_isrss));
+  usage.Set(Napi::String::New(env, "minflt"), Napi::Number::New(env, ru.ru_minflt));
+  usage.Set(Napi::String::New(env, "majflt"), Napi::Number::New(env, ru.ru_majflt));
+  usage.Set(Napi::String::New(env, "nswap"), Napi::Number::New(env, ru.ru_nswap));
+  usage.Set(Napi::String::New(env, "inblock"), Napi::Number::New(env, ru.ru_inblock));
+  usage.Set(Napi::String::New(env, "oublock"), Napi::Number::New(env, ru.ru_oublock));
+  usage.Set(Napi::String::New(env, "msgsnd"), Napi::Number::New(env, ru.ru_msgsnd));
+  usage.Set(Napi::String::New(env, "msgrcv"), Napi::Number::New(env, ru.ru_msgrcv));
+  usage.Set(Napi::String::New(env, "nsignals"), Napi::Number::New(env, ru.ru_nsignals));
+  usage.Set(Napi::String::New(env, "nvcsw"), Napi::Number::New(env, ru.ru_nvcsw));
+  usage.Set(Napi::String::New(env, "nivcsw"), Napi::Number::New(env, ru.ru_nivcsw));
+
+  return usage;
 }
 
-NAN_METHOD( getrusage_array ) {
-    struct rusage ru;
-    int who = (info[0]->IsNumber()) ? getIntArg(info, 0) : RUSAGE_SELF;
 
-    getrusage(who, &ru);
+Napi::Object Init(Napi::Env env, Napi::Object exports) {
+  exports.Set(Napi::String::New(env, "RUSAGE_SELF"), Napi::Number::New(env, RUSAGE_SELF));
+  exports.Set(Napi::String::New(env, "RUSAGE_CHILDREN"), Napi::Number::New(env, RUSAGE_CHILDREN));
+  exports.Set(Napi::String::New(env, "getrusage"), Napi::Function::New(env, getrusageNapi));
 
-    // faster to zero-detect than to create new Number every time
-    v8::Local<v8::Number> zero = Nan::New(0);
-    #define _number(v)     (((v) > 0) ? Nan::New((double)v) : zero)
-
-    // note: nan-2.2.0 is unable to Nan::New() a long (ambiguous), cast to double
-    v8::Local<v8::Array> usage_array = Nan::New<v8::Array>(16);
-    Nan::Set(usage_array, 0, Nan::New((double)ru.ru_utime.tv_sec + (double)ru.ru_utime.tv_usec * 1e-6));
-    Nan::Set(usage_array, 1, Nan::New((double)ru.ru_stime.tv_sec + (double)ru.ru_stime.tv_usec * 1e-6));
-    Nan::Set(usage_array, 2, Nan::New((double)ru.ru_maxrss));
-    Nan::Set(usage_array, 4,  _number(ru.ru_ixrss));
-    Nan::Set(usage_array, 3,  _number(ru.ru_idrss));
-    Nan::Set(usage_array, 5,  _number(ru.ru_isrss));
-    Nan::Set(usage_array, 6, Nan::New((double)ru.ru_minflt));
-    Nan::Set(usage_array, 7,  _number(ru.ru_majflt));
-    Nan::Set(usage_array, 8,  _number(ru.ru_nswap));
-    Nan::Set(usage_array, 9,  _number(ru.ru_inblock));
-    Nan::Set(usage_array, 10, _number(ru.ru_oublock));
-    Nan::Set(usage_array, 11, _number(ru.ru_msgsnd));
-    Nan::Set(usage_array, 12, _number(ru.ru_msgrcv));
-    Nan::Set(usage_array, 13, _number(ru.ru_nsignals));
-    Nan::Set(usage_array, 14, Nan::New((double)ru.ru_nvcsw));
-    Nan::Set(usage_array, 15, Nan::New((double)ru.ru_nivcsw));
-
-    info.GetReturnValue().Set(usage_array);
+  return exports;
 }
 
-NAN_MODULE_INIT(Init) {
-    Nan::Set(target, Nan::New("getrusageArray").ToLocalChecked(),       Nan::GetFunction(Nan::New<FunctionTemplate>(getrusage_array)).ToLocalChecked()),
-    Nan::Set(target, Nan::New("RUSAGE_SELF").ToLocalChecked(),          Nan::New(RUSAGE_SELF)),
-    Nan::Set(target, Nan::New("RUSAGE_CHILDREN").ToLocalChecked(),      Nan::New(RUSAGE_CHILDREN)),
-    ((void)0) ;
-}
-
-NODE_MODULE(getrusage, Init)
+NODE_API_MODULE(getrusage, Init)
