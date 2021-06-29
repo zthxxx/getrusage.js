@@ -7,9 +7,10 @@ set -euox pipefail
 
 npm run clean
 
-(cd getrusage && node-gyp rebuild)
+# use node-gyp v7 to compatible with python2 in owr ci env
+node-gyp -C getrusage rebuild
 
-platform_arch=$(node -e 'console.log(`${process.platform}-${os.arch()}`)')
+platform_arch=$(node -p '`${process.platform}-${os.arch()}`')
 
 mkdir -p build
 mv -f getrusage/build/Release/getrusage.node build/getrusage-${platform_arch}.node

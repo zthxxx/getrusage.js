@@ -1,6 +1,6 @@
 {
   "name": "getrusage.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "sideEffects": false,
   "description": "getrusage for node precompiled",
   "main": "lib/index.js",
@@ -42,7 +42,7 @@
     "@npmcli/promise-spawn": "^2.0.0",
     "@types/node": "^16.0.0",
     "node-addon-api": "^4.0.0",
-    "node-gyp": "^8.1.0",
+    "node-gyp": "^7.1.2",
     "rimraf": "^3.0.2",
     "typescript": "^4.3.5"
   }
