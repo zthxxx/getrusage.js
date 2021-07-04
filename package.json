@@ -1,0 +1,49 @@
+{
+  "name": "getrusage.js",
+  "version": "0.0.1",
+  "sideEffects": false,
+  "description": "getrusage for node precompiled",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "keywords": [
+    "getrusage"
+  ],
+  "author": "zthxxx.me@gmail.com",
+  "license": "MIT",
+  "repository": "zthxxx/getrusage.js",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "homepage": "https://github.com/zthxxx/getrusage.js",
+  "bugs": {
+    "url": "https://github.com/zthxxx/getrusage.js/issues"
+  },
+  "scripts": {
+    "clean": "rimraf build getrusage/build dist lib es tsconfig.tsbuildinfo",
+    "clean:gyp": "rimraf getrusage/build",
+    "build": "./scripts/build.sh",
+    "test": "node tests/test.js"
+  },
+  "files": [
+    "README.md",
+    ".npmrc",
+    "scripts",
+    "getrusage",
+    "src",
+    "es",
+    "lib",
+    "dist",
+    "build"
+  ],
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "devDependencies": {
+    "@npmcli/promise-spawn": "^2.0.0",
+    "@types/node": "^16.0.0",
+    "nan": "^2.14.2",
+    "node-gyp": "^8.1.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.3.5"
+  }
+}
