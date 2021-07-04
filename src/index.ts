@@ -1,9 +1,19 @@
 import os from 'os'
 
+const supports = [
+  'darwin-x64',
+  'linux-x64',
+]
+
 const platformArch = `${process.platform}-${os.arch()}`
 
-const binding = require(`../build/getrusage-${platformArch}`)
+if (!supports.includes(platformArch)) {
+  throw Error(`
+  getrusage.js is only support and precompiled for ${supports.join(' / ')} platforms.
+  `)
+}
 
+const binding = require(`../build/getrusage-${platformArch}`)
 
 export type RUSAGE_SELF = number
 export type RUSAGE_CHILDREN = number
