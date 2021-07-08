@@ -1,6 +1,6 @@
 {
   "name": "getrusage.js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "sideEffects": false,
   "description": "getrusage for node precompiled",
   "main": "lib/index.js",
