@@ -1,0 +1,82 @@
+# https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: build
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - os: ubuntu-latest
+            arch: x64
+
+          - os: ubuntu-latest
+            arch: arm64
+
+          - os: ubuntu-latest
+            arch: arm
+
+          - os: macos-latest
+            arch: x64
+
+          - os: macos-latest
+            arch: arm64
+
+          - os: windows-latest
+            arch: x64
+
+          - os: windows-latest
+            arch: arm64
+
+          - os: windows-latest
+            arch: ia32
+
+    name: build - ${{ matrix.target.os }} - ${{ matrix.target.arch }}
+    runs-on: ${{ matrix.target.os }}
+
+    steps:
+      - name: Checkout
+        # https://github.com/actions/checkout
+        uses: actions/checkout@v2
+        with:
+          # Number of commits to fetch. 0 indicates all history.
+          # all history for changelog
+          fetch-depth: 0
+
+      - name: Setup node
+        # https://github.com/actions/setup-node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org
+
+      - name: Set env
+        if: matrix.target.os == 'windows-latest'
+        shell: bash
+        run: echo "C:\\msys64\\mingw64\\bin" >> $GITHUB_PATH
+
+      - name: Install
+        run: |
+          env
+          node --version
+          npm --version
+          npm ci
+
+      - name: Build package
+        id: build
+        run: |
+          npm run build -- ${{ matrix.target.arch }}
+
+      - name: Upload artifact
+        # https://github.com/actions/upload-artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ steps.build.outputs.target_bin }}
+          path: build/${{ steps.build.outputs.target_bin }}
+          if-no-files-found: error

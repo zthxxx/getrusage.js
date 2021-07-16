@@ -1,19 +1,16 @@
-import os from 'os'
+import path from 'path'
+import { existsSync as isExists } from 'fs'
 
-const supports = [
-  'darwin-x64',
-  'linux-x64',
-]
 
-const platformArch = `${process.platform}-${os.arch()}`
+const platformArch = `${process.platform}-${process.arch}`
 
-if (!supports.includes(platformArch)) {
+if (!isExists(path.join(__dirname, '..', 'build', `getrusage-${platformArch}.node`))) {
   throw Error(`
-  getrusage.js is only support and precompiled for ${supports.join(' / ')} platforms.
+  getrusage.js not support for platform ${platformArch} now!
   `)
 }
 
-const binding = require(`../build/getrusage-${platformArch}`)
+const binding = require(path.join('..', 'build', `getrusage-${platformArch}`))
 
 export type RUSAGE_SELF = number
 export type RUSAGE_CHILDREN = number

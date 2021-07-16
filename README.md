@@ -2,7 +2,7 @@
 
 system function [`getrusage()`](https://www.gnu.org/software/libc/manual/html_node/Resource-Usage.html) binding to return process resource usage
 
-precompiled (and only support) for `drawin-x64` / `linux-x64` (via `${process.platform}-${os.arch()}`)
+precompiled (and only support) for `drawin-x64` / `linux-x64` (via `${process.platform}-${process.arch}`)
 
 ## Install
 
@@ -44,7 +44,3 @@ console.log(usage)
 //   nivcsw: 10
 // }
 ```
-
-## Credit
-
-- thanks [andrasq/node-qrusage](https://github.com/andrasq/node-qrusage)
