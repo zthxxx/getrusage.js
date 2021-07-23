@@ -24,4 +24,4 @@ mv -f getrusage/build/Release/getrusage.node "build/${target_bin}"
 
 npm run clean:gyp
 
-tsc
+npm run build:entry

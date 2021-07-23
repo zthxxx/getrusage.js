@@ -21,7 +21,8 @@
   "scripts": {
     "clean": "rimraf getrusage/build dist lib es tsconfig.tsbuildinfo",
     "clean:gyp": "rimraf getrusage/build",
-    "build": "bash ./scripts/build.sh",
+    "build": "./scripts/build.sh",
+    "build:entry": "tsc",
     "test": "node tests/test.js"
   },
   "files": [
