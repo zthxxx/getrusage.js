@@ -5,9 +5,11 @@
 
 arch=${1:-x64}
 
+# bash strict mode 
+# https://gist.github.com/mohanpedala/1e2ff5661761d3abd0385e8223e16425
 set -euox pipefail
 
-npm run clean
+pnpm run clean
 
 # use node-gyp v7 to compatible with python2 in owr ci env
 node-gyp -C getrusage rebuild --arch=${arch}
@@ -22,6 +24,6 @@ echo "::set-output name=target_bin::${target_bin}"
 mkdir -p build
 mv -f getrusage/build/Release/getrusage.node "build/${target_bin}"
 
-npm run clean:gyp
+pnpm run clean:gyp
 
-npm run build:entry
+pnpm run build:entry

@@ -1,6 +1,9 @@
 const fs = require('fs')
 const path = require('path')
+const util = require('util')
 const assert = require('assert')
+
+const core = require('@actions/core')
 const promiseSpawn = require('@npmcli/promise-spawn')
 const {
   getrusage,
@@ -8,6 +11,7 @@ const {
   RUSAGE_CHILDREN,
 } = require('../lib')
 
+const inspect = (obj) => util.inspect(obj, { colors: true, compact: false })
 
 const assertStruct = (usage) => {
   const keys = new Set([
@@ -41,8 +45,10 @@ const assertStruct = (usage) => {
   )
 }
 
-console.info('RUSAGE_SELF:', RUSAGE_SELF)
-console.info('RUSAGE_CHILDREN:', RUSAGE_CHILDREN)
+core.startGroup(`RUSAGE flags`)
+core.info(`RUSAGE_SELF: ${RUSAGE_SELF}`)
+core.info(`RUSAGE_CHILDREN: ${RUSAGE_CHILDREN}`)
+core.endGroup()
 
 
 
@@ -55,7 +61,10 @@ const selfInitUsage = getrusage()
 
 const pipeline = [
   () => {
-    console.info('[getrusage] - self: initial', selfInitUsage)
+    core.startGroup(`[getrusage] - self initial`)
+    core.info(`selfInitUsage ${inspect(selfInitUsage)}`)
+    core.endGroup()
+
     assertStruct(selfInitUsage)
     assert.ok(selfInitUsage.utime + selfInitUsage.stime > 0)
     assert.ok(selfInitUsage.maxrss > 0)
@@ -63,7 +72,11 @@ const pipeline = [
 
   () => {
     const nonChildUsage = getrusage(RUSAGE_CHILDREN)
-    console.info('[getrusage] - child: none', nonChildUsage)
+
+    core.startGroup(`[getrusage] - child none`)
+    core.info(`nonChildUsage ${inspect(nonChildUsage)}`)
+    core.endGroup()
+
     assertStruct(nonChildUsage)
     assert.equal(nonChildUsage.utime, 0)
     assert.equal(nonChildUsage.stime, 0)
@@ -84,7 +97,10 @@ const pipeline = [
 
   () => {
     const childUsage = getrusage(RUSAGE_CHILDREN)
-    console.info('[getrusage] - child: done', childUsage)
+
+    core.startGroup(`[getrusage] - child done`)
+    core.info(`childUsage ${inspect(childUsage)}`)
+    core.endGroup()
 
     assertStruct(childUsage)
     assert.ok(childUsage.utime > 0)
@@ -108,7 +124,11 @@ const pipeline = [
 
   () => {
     const selfUsage = getrusage()
-    console.info('[getrusage] - self: allocate 50M', selfUsage)
+
+    core.startGroup(`[getrusage] - self allocate 50M`)
+    core.info(`selfUsage ${inspect(selfUsage)}`)
+    core.endGroup()
+
     assertStruct(selfUsage)
     assert.ok(selfUsage.utime > 0)
     assert.ok(selfUsage.stime > 0)
@@ -126,7 +146,11 @@ const pipeline = [
 
   () => {
     const selfUsage = getrusage(RUSAGE_SELF)
-    console.info('[getrusage] - self: loop time', selfUsage)
+
+    core.startGroup(`[getrusage] - self: loop time`)
+    core.info(`selfUsage ${inspect(selfUsage)}`)
+    core.endGroup()
+
     assertStruct(selfUsage)
     assert.ok(selfUsage.utime > 2)
     assert.ok(selfUsage.stime > 0)

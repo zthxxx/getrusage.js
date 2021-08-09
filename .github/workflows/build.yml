@@ -47,17 +47,30 @@ jobs:
           node-version: 16
           registry-url: https://registry.npmjs.org
 
-      - name: Install
+      - name: Setup pnpm
+        # https://github.com/pnpm/action-setup
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6
+
+      - name: Environment
         run: |
+          set -ex
           env
+          hostname
+          whoami
           node --version
           npm --version
-          npm ci
+          pnpm --version
 
-      - name: Build package
+      - name: Install
+        run: |
+          pnpm i --frozen-lockfile
+
+      - name: Build binding binary
         id: build
         run: |
-          npm run build -- ${{ matrix.target.arch }}
+          pnpm run build -- ${{ matrix.target.arch }}
 
       - name: Upload artifact
         # https://github.com/actions/upload-artifact
@@ -106,13 +119,25 @@ jobs:
           node-version: ${{ matrix.target.node }}
           registry-url: https://registry.npmjs.org
 
+      - name: Setup pnpm
+        # https://github.com/pnpm/action-setup
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6
+
+      - name: Environment
+        run: |
+          set -ex
+          env
+          hostname
+          whoami
+          node --version
+          npm --version
+          pnpm --version
+
       - name: Install
         run: |
-          env
-          node --version
-          npm i -g npm
-          npm --version
-          npm ci
+          pnpm i --frozen-lockfile
       
       - name: Platform Arch Info
         id: platform
@@ -120,10 +145,11 @@ jobs:
           echo "::set-output name=platform::$(node -p '`${process.platform}-${process.arch}`')"
 
       - name: Download artifacts
+        # https://github.com/actions/download-artifact
         uses: actions/download-artifact@v2
         with:
           name: getrusage-${{ steps.platform.outputs.platform }}.node
-          path: .
+          path: build
 
       - name: List artifacts
         run: |
@@ -131,8 +157,8 @@ jobs:
 
       - name: Build npm entry
         run: |
-          npm run build:entry
+          pnpm run build:entry
 
       - name: Unit Test
         run: |
-          npm test
+          pnpm test
