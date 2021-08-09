@@ -1,0 +1,45 @@
+# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#example-using-an-action-in-the-same-repository-as-the-workflow
+# https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: Setup environment
+description: 'prepare for building environment'
+runs:
+  using: "composite"
+  steps:
+
+    - name: Checkout
+      # https://github.com/actions/checkout
+      uses: actions/checkout@v2
+      with:
+        # Number of commits to fetch. 0 indicates all history.
+        # all history for changelog
+        fetch-depth: 1
+
+    - name: Setup node
+      # https://github.com/actions/setup-node
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+        registry-url: https://registry.npmjs.org
+
+    - name: Setup pnpm
+      # https://github.com/pnpm/action-setup
+      uses: pnpm/action-setup@v2.0.1
+      with:
+        version: 6
+
+    - name: Environment
+      shell: bash
+      run: |
+        set -ex
+        env
+        hostname
+        whoami
+        node --version
+        npm --version
+        pnpm --version
+
+    - name: Install
+      shell: bash
+      run: |
+        pnpm i --frozen-lockfile

@@ -32,40 +32,8 @@ jobs:
     runs-on: ${{ matrix.target.os }}
 
     steps:
-      - name: Checkout
-        # https://github.com/actions/checkout
-        uses: actions/checkout@v2
-        with:
-          # Number of commits to fetch. 0 indicates all history.
-          # all history for changelog
-          fetch-depth: 0
-
-      - name: Setup node
-        # https://github.com/actions/setup-node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-          registry-url: https://registry.npmjs.org
-
-      - name: Setup pnpm
-        # https://github.com/pnpm/action-setup
-        uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 6
-
-      - name: Environment
-        run: |
-          set -ex
-          env
-          hostname
-          whoami
-          node --version
-          npm --version
-          pnpm --version
-
-      - name: Install
-        run: |
-          pnpm i --frozen-lockfile
+      - name: Setup environment
+        uses: zthxxx/getrusage.js/.github/actions/setup@master
 
       - name: Build binding binary
         id: build
@@ -104,40 +72,8 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout
-        # https://github.com/actions/checkout
-        uses: actions/checkout@v2
-        with:
-          # Number of commits to fetch. 0 indicates all history.
-          # all history for changelog
-          fetch-depth: 0
-
-      - name: Setup node
-        # https://github.com/actions/setup-node
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.target.node }}
-          registry-url: https://registry.npmjs.org
-
-      - name: Setup pnpm
-        # https://github.com/pnpm/action-setup
-        uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 6
-
-      - name: Environment
-        run: |
-          set -ex
-          env
-          hostname
-          whoami
-          node --version
-          npm --version
-          pnpm --version
-
-      - name: Install
-        run: |
-          pnpm i --frozen-lockfile
+      - name: Setup environment
+        uses: zthxxx/getrusage.js/.github/actions/setup@master
       
       - name: Platform Arch Info
         id: platform
@@ -152,8 +88,9 @@ jobs:
           path: build
 
       - name: List artifacts
+        # https://stackoverflow.com/questions/16073708/force-git-status-to-output-color-on-the-terminal-inside-a-script
         run: |
-          git status
+          git -c color.status=always status
 
       - name: Build npm entry
         run: |
