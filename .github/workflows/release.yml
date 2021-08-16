@@ -1,0 +1,49 @@
+# https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+# attempting to publish any unpublished packages to npm
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup environment
+        uses: zthxxx/getrusage.js/.github/actions/setup@master
+      
+      - name: Check need release
+        # only release if no changeset files
+        id: check
+        run: |
+          set -ex
+          pnpm changeset version
+
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo -e "\n\n[changesets] detected changeset files, SKIP release.\n\n"
+            echo "::set-output name=release::false"
+            git reset HEAD --hard
+            git clean -df
+          else
+            echo "::set-output name=release::true"
+          fi
+
+      - name: Build npm entry
+        if: ${{ steps.check.outputs.release == 'true' }}
+        run: |
+          pnpm run build:entry
+
+      - name: Changeset Publish
+        if: ${{ steps.check.outputs.release == 'true' }}
+        # try to bump version and create pull request
+        # https://github.com/changesets/action
+        uses: changesets/action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        with:
+          publish: pnpm changeset publish

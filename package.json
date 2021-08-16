@@ -1,6 +1,6 @@
 {
   "name": "getrusage.js",
-  "version": "0.1.2",
+  "version": "0.2.1-alpha.0",
   "sideEffects": false,
   "description": "getrusage for node precompiled",
   "main": "lib/index.js",
@@ -19,10 +19,11 @@
     "url": "https://github.com/zthxxx/getrusage.js/issues"
   },
   "scripts": {
-    "clean": "rimraf getrusage/build dist lib es tsconfig.tsbuildinfo",
+    "clean": "pnpm clean:gyp && pnpm clean:tsbuild",
     "clean:gyp": "rimraf getrusage/build",
-    "build": "./scripts/build.sh",
-    "build:entry": "tsc",
+    "clean:tsbuild": "rimraf lib es tsconfig.tsbuildinfo",
+    "build:binary": "./scripts/build-binary.sh",
+    "build:entry": "pnpm clean:tsbuild && tsc",
     "test": "node tests/test.js"
   },
   "files": [
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@actions/core": "^1.6.0",
+    "@changesets/cli": "^2.19.0",
     "@npmcli/promise-spawn": "^2.0.0",
     "@types/node": "^16.11.17",
     "node-addon-api": "^4.2.0",

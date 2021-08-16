@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const util = require('util')
 const assert = require('assert')
+const { performance } = require('perf_hooks')
 
 const core = require('@actions/core')
 const promiseSpawn = require('@npmcli/promise-spawn')

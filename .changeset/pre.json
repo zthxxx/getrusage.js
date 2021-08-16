@@ -1,0 +1,10 @@
+{
+  "mode": "exit",
+  "tag": "alpha",
+  "initialVersions": {
+    "getrusage.js": "0.2.0"
+  },
+  "changesets": [
+    "perfect-ears-swim"
+  ]
+}
