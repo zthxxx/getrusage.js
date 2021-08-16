@@ -2,7 +2,12 @@
 # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
 name: Setup environment
-description: 'prepare for building environment'
+description: prepare for building environment
+inputs:
+  node-version:
+    description: 'Nodejs version for actions/setup-node'
+    default: 16
+
 runs:
   using: "composite"
   steps:
@@ -19,7 +24,7 @@ runs:
       # https://github.com/actions/setup-node
       uses: actions/setup-node@v2
       with:
-        node-version: 16
+        node-version: ${{ inputs.node-version }}
         registry-url: https://registry.npmjs.org
 
     - name: Setup pnpm
@@ -38,6 +43,17 @@ runs:
         node --version
         npm --version
         pnpm --version
+
+    - name: Cache .pnpm-store
+      # https://github.com/actions/cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.pnpm-store
+          node_modules
+        key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm
 
     - name: Install
       shell: bash

@@ -10,6 +10,7 @@ dist/
 /lib
 /temp
 /.cache
+/.artifacts
 
 /site
 
