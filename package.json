@@ -1,8 +1,8 @@
 {
   "name": "getrusage.js",
-  "version": "0.2.1",
-  "sideEffects": false,
+  "version": "0.2.4",
   "description": "getrusage for node precompiled",
+  "sideEffects": false,
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "keywords": [
@@ -12,6 +12,7 @@
   "license": "MIT",
   "repository": "zthxxx/getrusage.js",
   "publishConfig": {
+    "access": "public",
     "registry": "https://registry.npmjs.org"
   },
   "homepage": "https://github.com/zthxxx/getrusage.js",
