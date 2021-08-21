@@ -8,8 +8,8 @@ You don't need to compile (`node-gyp`) or download (`node-pre-gyp`) anything by 
 
 ## Support platforms
 
-|                        | node12 | node14 | node16 |
-| ---------------------  | ------ | ------ | ------ |
+| platform \ node        | node12 | node14 | node16 |
+| ---------------------- | ------ | ------ | ------ |
 | Linux x64              | ✓      | ✓      | ✓      |
 | Linux arm64            | ✓      | ✓      | ✓      |
 | Linux arm32            | ✓      | ✓      | ✓      |
