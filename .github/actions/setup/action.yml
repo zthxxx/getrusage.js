@@ -25,7 +25,6 @@ runs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ inputs.node-version }}
-        registry-url: https://registry.npmjs.org
 
     - name: Setup pnpm
       # https://github.com/pnpm/action-setup
@@ -44,6 +43,7 @@ runs:
         node --version
         npm --version
         pnpm --version
+        cat ~/.npmrc || true
 
     - name: Cache .pnpm-store
       # https://github.com/actions/cache

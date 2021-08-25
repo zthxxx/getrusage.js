@@ -45,8 +45,5 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # seems a bug that need `NODE_AUTH_TOKEN` while using `changeset publish` with `actions/setup-node` and `changesets/action`
-          # https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages#publishing-packages-to-the-npm-registry
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
           publish: pnpm changeset publish
