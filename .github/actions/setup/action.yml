@@ -39,6 +39,8 @@ runs:
         set -ex
         git config color.status always
         env
+        gcc --version
+        g++ --version
         hostname
         whoami
         node --version

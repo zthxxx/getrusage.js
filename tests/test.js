@@ -46,6 +46,10 @@ const assertStruct = (usage) => {
   )
 }
 
+core.info(`
+  Platform: ${process.platform}-${process.arch}
+`)
+
 core.startGroup(`RUSAGE flags`)
 core.info(`RUSAGE_SELF: ${RUSAGE_SELF}`)
 core.info(`RUSAGE_CHILDREN: ${RUSAGE_CHILDREN}`)
