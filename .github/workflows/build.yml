@@ -36,6 +36,18 @@ jobs:
       - name: Setup environment
         uses: zthxxx/getrusage.js/.github/actions/setup@master
 
+      - name: Select GCC Version
+        # using gcc 4.9 due to the sh*t compatibility in our legacy build system
+        if: matrix.target.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          echo 'deb http://dk.archive.ubuntu.com/ubuntu/ xenial main' | sudo tee /etc/apt/sources.list
+          echo 'deb http://dk.archive.ubuntu.com/ubuntu/ xenial universe' | sudo tee /etc/apt/sources.list
+          sudo apt update
+          sudo apt install -y gcc-4.9 g++-4.9
+          echo "CC=gcc-4.9" >> $GITHUB_ENV
+          echo "CXX=g++-4.9" >> $GITHUB_ENV
+
       - name: Build binding binary
         id: build
         run: |
