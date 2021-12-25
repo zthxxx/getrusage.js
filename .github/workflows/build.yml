@@ -7,6 +7,10 @@ on:
   push:
     branches:
       - '*'
+  # https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow
+  workflow_dispatch:
+    branches:
+      - master
 
 jobs:
   build:
