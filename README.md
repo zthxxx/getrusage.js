@@ -1,8 +1,8 @@
 # getrusage.js
 
-POSIX system function [`getrusage()`](https://www.gnu.org/software/libc/manual/html_node/Resource-Usage.html) usually used to examine the resource usage of a process.
+POSIX system function [`getrusage()`](https://www.gnu.org/software/libc/manual/html_node/Resource-Usage.html) is usually used to examine the resource usage of a process.
 
-[`getrusage.js`](https://www.npmjs.com/package/getrusage.js) is a binding to Node.js via [Node-API](https://nodejs.org/api/n-api.html), and make pre-build binaries for distribution, **0 other dependencies!**
+[`getrusage.js`](https://www.npmjs.com/package/getrusage.js) is a binding to Node.js via [Node-API](https://nodejs.org/api/n-api.html), and makes pre-build binaries for distribution, with **0 other dependencies!**
 
 You don't need to compile (`node-gyp`) or download (`node-pre-gyp`) anything by postinstall.
 
