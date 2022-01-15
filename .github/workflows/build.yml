@@ -14,7 +14,7 @@ on:
     inputs:
       debug_enabled:
         # https://github.com/mxschmitt/action-tmate#manually-triggered-debug
-        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'     
+        description: 'Debug actions with tmate? (true | false, false by default)'
         required: false
         default: false
 
@@ -54,20 +54,14 @@ jobs:
         with:
           limit-access-to-actor: true
 
-      - name: Select GCC Version
+      - name: Select GCC Version to 4.9
         # using gcc 4.9 due to the sh*t compatibility in our legacy build system
         if: ${{ matrix.target.os == 'ubuntu-latest' && matrix.target.arch == 'x64' }}
-        # https://github.com/egor-tensin/setup-gcc
-        uses: egor-tensin/setup-gcc@v1.2
-        with:
-          version: 4.8
-          platform: x64
+        uses: zthxxx/getrusage.js/.github/actions/install-gcc-4.9@master
 
       - name: Build binding binary
         id: build
         run: |
-          gcc --version
-          g++ --version
           pnpm run build:binary -- ${{ matrix.target.arch }}
           git status
 
@@ -84,6 +78,7 @@ jobs:
 
     strategy:
       fail-fast: false
+      # https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
       matrix:
         # only can test with GitHub-hosted runners
         # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
@@ -96,6 +91,12 @@ jobs:
           - 12
           - 14
           - 16
+          - 18
+        exclude:
+          # node v18.7.0 cannot run on ubuntu-18.04, with error:
+          #    node: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.28' not found (required by node)
+          - os: ubuntu-18.04
+            node: 18
 
     # all GitHub-hosted runners's arch is x64
     name: test - ${{ matrix.os }} - node v${{ matrix.node }}

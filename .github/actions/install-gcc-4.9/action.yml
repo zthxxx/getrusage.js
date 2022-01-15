@@ -1,0 +1,60 @@
+# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#example-using-an-action-in-the-same-repository-as-the-workflow
+# https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: Install GCC 4.9
+description: Install gcc/g++ 4.9 version on ubuntu 20 (x64 only)
+
+runs:
+  using: "composite"
+  steps:
+    - name: Cache .gcc-4.9-deb
+      id: cache-gcc-deb
+      # https://github.com/actions/cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.gcc-4.9-deb
+        key: ubuntu-x64-gcc-4.9
+
+    - name: Create Download Dir
+      if: steps.cache-gcc-deb.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        mkdir -p ~/.gcc-4.9-deb
+
+    - name: Download GCC 4.9 (x64) deb files
+      if: steps.cache-gcc-deb.outputs.cache-hit != 'true'
+      shell: bash
+      # https://stackoverflow.com/questions/48398475/fail-to-install-gcc-4-9-in-ubuntu17-04/48402248
+      run: |
+        cd ~/.gcc-4.9-deb
+        wget http://launchpadlibrarian.net/247707088/libmpfr4_3.1.4-1_amd64.deb
+        wget http://launchpadlibrarian.net/253728424/libasan1_4.9.3-13ubuntu2_amd64.deb
+        wget http://launchpadlibrarian.net/253728426/libgcc-4.9-dev_4.9.3-13ubuntu2_amd64.deb
+        wget http://launchpadlibrarian.net/253728314/gcc-4.9-base_4.9.3-13ubuntu2_amd64.deb
+        wget http://launchpadlibrarian.net/253728399/cpp-4.9_4.9.3-13ubuntu2_amd64.deb
+        wget http://launchpadlibrarian.net/253728404/gcc-4.9_4.9.3-13ubuntu2_amd64.deb
+        wget http://launchpadlibrarian.net/253728432/libstdc++-4.9-dev_4.9.3-13ubuntu2_amd64.deb
+        wget http://launchpadlibrarian.net/253728401/g++-4.9_4.9.3-13ubuntu2_amd64.deb
+
+    - name: Install GCC 4.9 deb files
+      shell: bash
+      # need libcilkrts5 libubsan0 before libgcc-4.9-dev
+      run: |
+        cd ~/.gcc-4.9-deb
+        sudo dpkg -i gcc-4.9-base_4.9.3-13ubuntu2_amd64.deb
+        sudo dpkg -i libmpfr4_3.1.4-1_amd64.deb
+        sudo dpkg -i libasan1_4.9.3-13ubuntu2_amd64.deb
+        sudo apt install -y libcilkrts5 libubsan0
+        sudo dpkg -i libgcc-4.9-dev_4.9.3-13ubuntu2_amd64.deb
+        sudo dpkg -i cpp-4.9_4.9.3-13ubuntu2_amd64.deb
+        sudo dpkg -i gcc-4.9_4.9.3-13ubuntu2_amd64.deb
+        sudo dpkg -i libstdc++-4.9-dev_4.9.3-13ubuntu2_amd64.deb
+        sudo dpkg -i g++-4.9_4.9.3-13ubuntu2_amd64.deb
+
+    - name: Select GCC version to 4.9
+      shell: bash
+      run: |
+        echo "CC=gcc-4.9" >> $GITHUB_ENV
+        echo "CXX=g++-4.9" >> $GITHUB_ENV
+        gcc-4.9 --version
+        g++-4.9 --version
