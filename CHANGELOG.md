@@ -1,18 +1,23 @@
-# getrusage.js
+# Changelog
 
-## 0.2.1
+https://www.npmjs.com/package/getrusage.js
 
-### Patch Changes
+## [0.2.7](https://github.com/zthxxx/getrusage.js/compare/v0.2.1...v0.2.7)
 
-- 9ecd3f3: support `linux`/`macOS` x `x64`/`arm` by cross-platform compile on GitHub Actions
+### chore
 
-## 0.2.1-alpha.0
+- make `linux x64` building file backwards-compatible to `gcc-4.9`
 
-### Minor Changes
+### ci
 
-- 9ecd3f3: support `linux`/`macOS` x `x64`/`arm` by cross-platform compile on GitHub Actions
+- use install `gcc-4.9` and use `gcc-4.9` to building for `linux x64`
 
+## [0.2.1](https://github.com/zthxxx/getrusage.js/compare/v0.1.2...v0.2.1)
 
-## 0.1.2
+### feature
 
-- e70fde3: first publish version, support only `x64` in POSIX with `gcc >= 4.2`
+- support `linux`/`macOS` x `x64`/`arm` by cross-platform compile on GitHub Actions; (`gcc >= 5.1`)
+
+## [0.1.2](https://github.com/zthxxx/getrusage.js/tree/v0.1.2)
+
+first publish version, support only `x64` in POSIX with `gcc >= 4.2`

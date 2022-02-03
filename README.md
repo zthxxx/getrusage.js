@@ -1,5 +1,7 @@
 # getrusage.js
 
+[![NPM version](https://badgen.net/npm/v/getrusage.js?color=green)](https://www.npmjs.com/package/getrusage.js)
+
 POSIX system function [`getrusage()`](https://www.gnu.org/software/libc/manual/html_node/Resource-Usage.html) is usually used to examine the resource usage of a process.
 
 [`getrusage.js`](https://www.npmjs.com/package/getrusage.js) is a binding to Node.js via [Node-API](https://nodejs.org/api/n-api.html), and makes pre-build binaries for distribution, with **0 other dependencies!**
@@ -8,13 +10,13 @@ You don't need to compile (`node-gyp`) or download (`node-pre-gyp`) anything by 
 
 ## Support platforms
 
-| platform \ node        | node12 | node14 | node16 |
-| ---------------------- | ------ | ------ | ------ |
-| Linux x64              | ✓      | ✓      | ✓      |
-| Linux arm64            | ✓      | ✓      | ✓      |
-| Linux arm32            | ✓      | ✓      | ✓      |
-| macOS x64              | ✓      | ✓      | ✓      |
-| macOS arm64 (M1 chips) | ✓      | ✓      | ✓      |
+| Platform \ Nodejs                                  | node 12 | node 14 | node 16 | node 18 |
+| -------------------------------------------------- | ------- | ------- | ------- | ------- |
+| **Linux x64** <br>*<small>(gcc >= 4.9)</small>*    | ✓       | ✓       | ✓       | ✓       | 
+| **Linux arm64** <br>*<small>(gcc >= 5.1)</small>*  | ✓       | ✓       | ✓       | ✓       | 
+| **Linux arm32** <br>*<small>(gcc >= 5.1)</small>*  | ✓       | ✓       | ✓       | ✓       | 
+| **macOS x64**                                      | ✓       | ✓       | ✓       | ✓       | 
+| **macOS arm64** <br>*<small>(M1/M2 chips)</small>* | ✓       | ✓       | ✓       | ✓       | 
 
 > Windows? not support yet, due to `getrusage()` is POSIX only.
 
