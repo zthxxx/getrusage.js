@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.7
+
+### Patch Changes
+
+- 9a213cf: make linux-x64 building file backwards-compatible to gcc-4.9
+
 https://www.npmjs.com/package/getrusage.js
 
 ## [0.2.7](https://github.com/zthxxx/getrusage.js/compare/v0.2.1...v0.2.7)
